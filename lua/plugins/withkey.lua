@@ -1,0 +1,27 @@
+local wk = require("which-key")
+
+wk.add({
+    { "<leader>e", "<cmd>Neotree float toggle<cr>", desc = "Файловый менеджер", mode = "n" },
+    { "<leader>w", "<cmd>w<cr>", desc = "Сохранить", mode = "n" },
+    { "<leader>c", "<cmd>BufferLinePickClose<cr>", desc = "Выбрать вкладку для закрытия", mode = "n" },
+    { "<leader>/", "<cmd>CommentToggle<cr>", desc = "Комментарий", mode = "n" },
+    { "<leader>f", group = "Поиск" },
+        { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Найти файл", mode = "n" },
+        { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Найти вкладку", mode = "n" },
+        { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Найти текст", mode = "n" },
+    { "<leader>g", group = "" },
+        { "<leader>gd", "<cmd>Telescope lsp_definitions<cr>", desc = "Перейти к определению", mode = "n" },
+        { "<leader>gD", "<cmd>Telescope lsp_implementations<cr>", desc = "Перейти к реализации", mode = "n" },
+        { "<leader>gr", "<cmd>Telescope lsp_references<cr>", desc = "Найти использования", mode = "n" },
+        { "<leader>gb", "<cmd>Gitsigns toggle_current_line_blame<cr>", desc = "Git Blame", mode = "n" },
+        { "<leader>gg", "<cmd>Neotree float git_status toggle<cr>", desc = "Git Status", mode = "n" },
+        { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Git Commits", mode = "n" },
+    { "<leader>d", group = "debug" },
+        { "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<cr>", desc = "Точка останова", mode = "n" },
+        { "<leader>dc", "<cmd>lua require('dap').continue()<cr>", desc = "Продолжить", mode = "n" },
+        { "<leader>do", "<cmd>lua require('dap').step_over()<cr>", desc = "Шаг с пропуском", mode = "n" },
+        { "<leader>di", "<cmd>lua require('dap').step_into()<cr>", desc = "Шаг внутрь", mode = "n" },
+        { "<leader>dO", "<cmd>lua require('dap').step_out()<cr>", desc = "Шаг наружу", mode = "n" },
+        { "<leader>dq", "<cmd>lua require('dap').terminate()<cr>", desc = "Завершить отладку", mode = "n" },
+    { "<leader>l", group = "lsp" },
+})
