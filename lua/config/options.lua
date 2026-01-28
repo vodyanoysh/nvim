@@ -56,6 +56,13 @@ vim.opt.timeoutlen = 300
 -- Completion
 vim.opt.completeopt = "menu,menuone,noselect"
 
+-- Suppress annoying file info messages when switching buffers
+vim.opt.shortmess:append("F") -- Don't show file info when opening
+vim.opt.shortmess:append("I") -- Don't show intro message
+vim.opt.shortmess:append("W") -- Don't show "written" message
+vim.opt.shortmess:append("a") -- Use abbreviations in messages (filnxtToO)
+vim.opt.shortmess:append("c") -- Don't show completion messages
+
 -- Suppress annoying warnings
 local notify = vim.notify
 vim.notify = function(msg, level, opts)

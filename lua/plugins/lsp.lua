@@ -207,6 +207,21 @@ return {
       -- Set default position encoding to utf-16 (prevents warnings)
       capabilities.offsetEncoding = { "utf-16" }
 
+      -- Enable semantic tokens (for better syntax highlighting)
+      capabilities.textDocument.semanticTokens = {
+        dynamicRegistration = false,
+        serverCapabilities = {
+          semanticTokensProvider = {
+            full = true,
+            legend = {
+              tokenModifiers = {},
+              tokenTypes = {},
+            },
+            range = true,
+          },
+        },
+      }
+
       -- Setup each server
       local ok_lspconfig, lspconfig = pcall(require, "lspconfig")
       if not ok_lspconfig then
@@ -232,6 +247,12 @@ return {
         callback = function(ev)
           -- Enable completion triggered by <c-x><c-o>
           vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+
+          -- Enable LSP semantic highlighting
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          if client and client.server_capabilities.semanticTokensProvider then
+            vim.lsp.semantic_tokens.start(ev.buf, client.id)
+          end
 
           local function map(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = ev.buf, desc = desc })
