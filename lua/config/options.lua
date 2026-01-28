@@ -55,3 +55,27 @@ vim.opt.timeoutlen = 300
 
 -- Completion
 vim.opt.completeopt = "menu,menuone,noselect"
+
+-- Suppress annoying warnings
+local notify = vim.notify
+vim.notify = function(msg, level, opts)
+  -- Filter out position_encoding warning
+  if type(msg) == "string" and msg:match("position_encoding") then
+    return
+  end
+  -- Filter out vim.deprecated warnings from third-party plugins
+  if type(msg) == "string" and msg:match("vim%.deprecated") then
+    return
+  end
+  if type(msg) == "string" and msg:match("vim%.str_utfindex is deprecated") then
+    return
+  end
+  if type(msg) == "string" and msg:match("vim%.validate is deprecated") then
+    return
+  end
+  notify(msg, level, opts)
+end
+
+-- Disable deprecation warnings from third-party plugins
+-- This prevents vim.deprecated from showing warnings in :checkhealth
+vim.g.deprecation_warnings = false

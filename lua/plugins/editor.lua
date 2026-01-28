@@ -53,25 +53,45 @@ return {
       { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "Git коммиты" },
       { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "Git статус" },
     },
-    opts = {
-      defaults = {
-        prompt_prefix = "   ",
-        selection_caret = " ",
-        path_display = { "smart" },
-        file_ignore_patterns = { ".git/", "node_modules/" },
-        mappings = {
-          i = {
-            ["<C-j>"] = "move_selection_next",
-            ["<C-k>"] = "move_selection_previous",
+    config = function()
+      -- Fix telescope treesitter preview errors by wrapping in pcall
+      local previewers = require("telescope.previewers")
+      local putils = require("telescope.previewers.utils")
+
+      -- Wrap ts_highlighter to handle errors gracefully
+      local ts_highlighter_original = putils.ts_highlighter
+      putils.ts_highlighter = function(...)
+        local ok, result = pcall(ts_highlighter_original, ...)
+        if ok then
+          return result
+        else
+          -- Fallback to no highlighting on error
+          return nil
+        end
+      end
+
+      local telescope = require("telescope")
+
+      telescope.setup({
+        defaults = {
+          prompt_prefix = "   ",
+          selection_caret = " ",
+          path_display = { "smart" },
+          file_ignore_patterns = { ".git/", "node_modules/" },
+          mappings = {
+            i = {
+              ["<C-j>"] = "move_selection_next",
+              ["<C-k>"] = "move_selection_previous",
+            },
           },
         },
-      },
-      pickers = {
-        find_files = {
-          hidden = true,
+        pickers = {
+          find_files = {
+            hidden = true,
+          },
         },
-      },
-    },
+      })
+    end,
   },
 
   -- Git signs

@@ -204,6 +204,9 @@ return {
       end
       local capabilities = cmp_lsp.default_capabilities()
 
+      -- Set default position encoding to utf-16 (prevents warnings)
+      capabilities.offsetEncoding = { "utf-16" }
+
       -- Setup each server
       local ok_lspconfig, lspconfig = pcall(require, "lspconfig")
       if not ok_lspconfig then
@@ -216,7 +219,8 @@ return {
         local ok_config = pcall(require, "lspconfig.server_configurations." .. server)
 
         if ok_config then
-          server_opts.capabilities = capabilities
+          -- Merge capabilities with server options
+          server_opts.capabilities = vim.tbl_deep_extend("force", capabilities, server_opts.capabilities or {})
           -- Setup server (pcall to handle any setup errors)
           pcall(lspconfig[server].setup, server_opts)
         end
@@ -233,13 +237,20 @@ return {
             vim.keymap.set(mode, lhs, rhs, { buffer = ev.buf, desc = desc })
           end
 
-          -- Navigation
-          map("n", "gd", "<cmd>Telescope lsp_definitions<CR>", "Перейти к определению")
-          map("n", "gD", "<cmd>Telescope lsp_implementations<CR>", "Перейти к реализации")
-          map("n", "gr", "<cmd>Telescope lsp_references<CR>", "Найти использования")
-          map("n", "gy", "<cmd>Telescope lsp_type_definitions<CR>", "Перейти к типу")
+          -- Navigation (using vim.lsp.buf to avoid position_encoding warnings)
+          map("n", "gd", vim.lsp.buf.definition, "Перейти к определению")
+          map("n", "gD", vim.lsp.buf.declaration, "Перейти к объявлению")
+          map("n", "gi", vim.lsp.buf.implementation, "Перейти к реализации")
+          map("n", "gr", vim.lsp.buf.references, "Найти использования")
+          map("n", "gy", vim.lsp.buf.type_definition, "Перейти к типу")
           map("n", "K", vim.lsp.buf.hover, "Показать документацию")
           map("n", "gK", vim.lsp.buf.signature_help, "Показать сигнатуру")
+
+          -- Alternative navigation with Telescope (optional, if you prefer Telescope UI)
+          map("n", "<leader>lD", "<cmd>Telescope lsp_definitions<CR>", "Найти определения (Telescope)")
+          map("n", "<leader>lI", "<cmd>Telescope lsp_implementations<CR>", "Найти реализации (Telescope)")
+          map("n", "<leader>lR", "<cmd>Telescope lsp_references<CR>", "Найти использования (Telescope)")
+          map("n", "<leader>lT", "<cmd>Telescope lsp_type_definitions<CR>", "Найти типы (Telescope)")
 
           -- LSP actions
           map("n", "<leader>lr", vim.lsp.buf.rename, "Переименовать")
