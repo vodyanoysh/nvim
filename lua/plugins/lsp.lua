@@ -199,7 +199,7 @@ return {
       -- Get capabilities
       local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
       if not ok_cmp then
-        vim.notify("cmp_nvim_lsp not available yet", vim.log.levels.WARN)
+        -- Silently skip if cmp_nvim_lsp not available yet
         return
       end
       local capabilities = cmp_lsp.default_capabilities()
@@ -207,25 +207,18 @@ return {
       -- Setup each server
       local ok_lspconfig, lspconfig = pcall(require, "lspconfig")
       if not ok_lspconfig then
-        vim.notify("lspconfig not available yet", vim.log.levels.WARN)
+        -- Silently skip if lspconfig not available yet
         return
       end
 
       for server, server_opts in pairs(opts.servers) do
-        -- Check if server config exists
-        local ok_server = pcall(function()
-          return lspconfig[server]
-        end)
+        -- Check if server config exists using require to avoid __index metamethod
+        local ok_config = pcall(require, "lspconfig.server_configurations." .. server)
 
-        if ok_server and lspconfig[server] then
+        if ok_config then
           server_opts.capabilities = capabilities
-          local setup_ok, err = pcall(lspconfig[server].setup, server_opts)
-          if not setup_ok then
-            vim.notify(
-              string.format("Failed to setup LSP server '%s': %s", server, err),
-              vim.log.levels.WARN
-            )
-          end
+          -- Setup server (pcall to handle any setup errors)
+          pcall(lspconfig[server].setup, server_opts)
         end
       end
 

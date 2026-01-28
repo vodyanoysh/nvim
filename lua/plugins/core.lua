@@ -5,12 +5,12 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    lazy = false,
+    event = { "BufReadPost", "BufNewFile" },
     priority = 900,
     config = function()
       local ok, treesitter_configs = pcall(require, "nvim-treesitter.configs")
       if not ok then
-        vim.notify("nvim-treesitter.configs not found. Run :TSUpdate", vim.log.levels.WARN)
+        -- Silently skip if treesitter configs not available yet
         return
       end
 

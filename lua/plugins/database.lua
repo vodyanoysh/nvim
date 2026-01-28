@@ -40,7 +40,10 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "sql", "mysql", "plsql" },
         callback = function()
-          require("cmp").setup.buffer({ sources = { { name = "vim-dadbod-completion" } } })
+          local ok, cmp = pcall(require, "cmp")
+          if ok then
+            cmp.setup.buffer({ sources = { { name = "vim-dadbod-completion" } } })
+          end
         end,
       })
 

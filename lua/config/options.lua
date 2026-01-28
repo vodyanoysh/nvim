@@ -21,8 +21,9 @@ vim.opt.mousefocus = true
 -- Clipboard integration
 vim.opt.clipboard = "unnamedplus"
 
--- Shell
-vim.opt.shell = "/bin/fish"
+-- Shell (use fish if available, otherwise fallback to bash)
+local shell = vim.fn.executable("fish") == 1 and "/bin/fish" or "/bin/bash"
+vim.opt.shell = shell
 
 -- True color support
 vim.opt.termguicolors = true

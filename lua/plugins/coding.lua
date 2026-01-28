@@ -17,8 +17,8 @@ return {
       cmp.setup({
         snippet = {
           expand = function(args)
-            -- No snippet engine configured
-            vim.fn["vsnip#anonymous"](args.body)
+            -- Minimal snippet support - just insert the text
+            vim.snippet.expand(args.body)
           end,
         },
         mapping = cmp.mapping.preset.insert({
@@ -28,11 +28,7 @@ return {
           ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Don't auto-select first item
           ["<Tab>"] = cmp.mapping(function(fallback)
-            -- Check if Copilot has a suggestion
-            local copilot_keys = vim.fn["copilot#Accept"]()
-            if copilot_keys ~= "" and type(copilot_keys) == "string" then
-              vim.api.nvim_feedkeys(copilot_keys, "i", true)
-            elseif cmp.visible() then
+            if cmp.visible() then
               cmp.select_next_item()
             else
               fallback()

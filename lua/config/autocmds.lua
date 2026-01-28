@@ -12,7 +12,11 @@ end
 vim.api.nvim_create_autocmd("VimLeavePre", {
   group = augroup,
   callback = function()
-    vim.cmd("silent! CopilotChatSave " .. get_project_name())
+    -- Check if CopilotChat is loaded before trying to save
+    local ok = pcall(vim.cmd, "CopilotChatSave " .. get_project_name())
+    if not ok then
+      -- Silently ignore if CopilotChat is not loaded
+    end
   end,
   desc = "Сохранение истории чата Copilot при выходе",
 })
@@ -21,7 +25,13 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 vim.api.nvim_create_autocmd("VimEnter", {
   group = augroup,
   callback = function()
-    vim.cmd("silent! CopilotChatLoad " .. get_project_name())
+    -- Delay loading to ensure CopilotChat has time to initialize
+    vim.defer_fn(function()
+      local ok = pcall(vim.cmd, "CopilotChatLoad " .. get_project_name())
+      if not ok then
+        -- Silently ignore if CopilotChat is not loaded
+      end
+    end, 1000)
   end,
   desc = "Загрузка истории чата Copilot при старте",
 })
