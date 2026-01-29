@@ -92,6 +92,7 @@ return {
         { "<leader>t", group = "Терминал" },
         { "<leader>b", group = "Буферы" },
         { "<leader>h", group = "Hop (прыжки)" },
+        { "<leader>c", group = "Цвета/Комментарии" },
         { "<leader>dv", group = "Diffview" },
       },
     },
