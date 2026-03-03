@@ -268,7 +268,9 @@ return {
           map("n", "gK", vim.lsp.buf.signature_help, "Показать сигнатуру")
 
           -- Alternative navigation with Telescope (optional, if you prefer Telescope UI)
-          map("n", "<leader>lD", "<cmd>Telescope lsp_definitions<CR>", "Найти определения (Telescope)")
+          map("n", "<leader>lD", function()
+            vim.diagnostic.setloclist({ open = true })
+          end, "Диагностика файла")
           map("n", "<leader>lI", "<cmd>Telescope lsp_implementations<CR>", "Найти реализации (Telescope)")
           map("n", "<leader>lR", "<cmd>Telescope lsp_references<CR>", "Найти использования (Telescope)")
           map("n", "<leader>lT", "<cmd>Telescope lsp_type_definitions<CR>", "Найти типы (Telescope)")
@@ -277,7 +279,7 @@ return {
           map("n", "<leader>lr", vim.lsp.buf.rename, "Переименовать")
           map({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, "Действия кода")
           map("n", "<leader>lf", function()
-            vim.lsp.buf.format({ async = true })
+            require("conform").format({ bufnr = 0, lsp_format = "never", async = true })
           end, "Форматировать")
 
           -- Diagnostics

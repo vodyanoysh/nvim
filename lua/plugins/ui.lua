@@ -94,6 +94,7 @@ return {
         { "<leader>h", group = "Hop (прыжки)" },
         { "<leader>c", group = "Цвета/Комментарии" },
         { "<leader>dv", group = "Diffview" },
+        { "<leader>lF", desc = "Ruff fix текущий файл" },
       },
     },
   },

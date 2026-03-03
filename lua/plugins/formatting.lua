@@ -5,15 +5,6 @@ return {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
     cmd = { "ConformInfo" },
-    keys = {
-      {
-        "<leader>fc",
-        function()
-          require("conform").format({ bufnr = 0 })
-        end,
-        desc = "Форматировать буфер",
-      },
-    },
     opts = {
       formatters_by_ft = {
         javascript = { "prettier" },

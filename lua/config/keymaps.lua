@@ -71,3 +71,34 @@ map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Переместить выде�
 
 -- Buffer management
 map("n", "<leader>ca", "<cmd>%bd|e#|bd#<CR>", { desc = "Закрыть все буферы" })
+
+-- Format buffer (conform.nvim, без LSP fallback)
+map("n", "<leader>fc", function()
+  require("conform").format({ bufnr = 0, lsp_format = "never" })
+end, { desc = "Форматировать буфер" })
+
+-- Ruff fix current file
+vim.api.nvim_create_user_command("RuffFix", function()
+  local file = vim.api.nvim_buf_get_name(0)
+  if file == "" then
+    vim.notify("Буфер не сохранён", vim.log.levels.WARN)
+    return
+  end
+  vim.cmd("write")
+  vim.notify("ruff: проверяю " .. vim.fn.fnamemodify(file, ":t"), vim.log.levels.INFO)
+  vim.system({ "ruff", "check", file, "--fix" }, {}, function(result)
+    vim.schedule(function()
+      if result.code == 0 then
+        vim.notify("ruff: ошибок не найдено", vim.log.levels.INFO)
+      else
+        local stderr = result.stderr or ""
+        if stderr ~= "" then
+          vim.notify("ruff stderr: " .. stderr, vim.log.levels.WARN)
+        end
+        vim.notify("ruff: исправления применены", vim.log.levels.INFO)
+      end
+      vim.cmd("edit!")
+    end)
+  end)
+end, { desc = "Ruff fix текущий файл" })
+map("n", "<leader>lF", "<cmd>RuffFix<CR>", { desc = "Ruff fix текущий файл" })
